@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+OS_NAME="$(uname -s 2>/dev/null || echo unknown)"
+
+echo "Verificando dependências do projeto..."
+
+case "$OS_NAME" in
+  Darwin)
+    if [[ -x /opt/homebrew/bin/brew ]]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [[ -x /usr/local/bin/brew ]]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+    if ! command -v brew >/dev/null 2>&1; then
+      echo "Homebrew não encontrado. Instalando Homebrew..."
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      if [[ -x /opt/homebrew/bin/brew ]]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [[ -x /usr/local/bin/brew ]]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+      fi
+    fi
+    command -v php >/dev/null 2>&1 || brew install php
+    command -v python3 >/dev/null 2>&1 || brew install python
+    ;;
+  Linux)
+    if command -v apt-get >/dev/null 2>&1; then
+      apt-get update
+      apt-get install -y php-cli python3
+    elif command -v dnf >/dev/null 2>&1; then
+      dnf install -y php-cli python3
+    elif command -v pacman >/dev/null 2>&1; then
+      pacman -Sy --noconfirm php python
+    else
+      echo "Erro: nenhum gerenciador de pacotes suportado foi encontrado no Linux."
+      exit 1
+    fi
+    ;;
+  MINGW*|MSYS*|CYGWIN*)
+    if ! command -v winget >/dev/null 2>&1; then
+      echo "Erro: no Windows, use o Git Bash com o winget disponível."
+      exit 1
+    fi
+    command -v php >/dev/null 2>&1 || winget install --id PHP.PHP.8.3 --exact --accept-source-agreements --accept-package-agreements
+    { command -v python3 >/dev/null 2>&1 || command -v python >/dev/null 2>&1; } || winget install --id Python.Python.3.12 --exact --accept-source-agreements --accept-package-agreements
+    ;;
+  *)
+    echo "Erro: sistema operacional não suportado automaticamente: $OS_NAME"
+    exit 1
+    ;;
+esac
+
+if ! command -v php >/dev/null 2>&1; then
+  echo "PHP não encontrado. Reabra o terminal e execute ./build novamente."
+  exit 1
+fi
+
+if ! command -v python3 >/dev/null 2>&1 && ! command -v python >/dev/null 2>&1; then
+  echo "Python não encontrado. Reabra o terminal e execute ./build novamente."
+  exit 1
+fi
+
+echo "Ambiente preparado com sucesso."
