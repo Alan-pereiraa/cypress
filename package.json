@@ -1,0 +1,25 @@
+{
+  "name": "projeto-qualidade-php",
+  "version": "1.0.0",
+  "description": "Sistema de cadastro de produtos com login, CRUD completo, PHP no backend e frontend separado. A aplicação foi criada para servir como projeto real nas aulas de qualidade de software.",
+  "main": "index.js",
+  "scripts": {
+    "test": "cypress run",
+    "test:open": "cypress open",
+    "test:run": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isabela-tvitek/projeto-qualidade-php.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isabela-tvitek/projeto-qualidade-php/issues"
+  },
+  "homepage": "https://github.com/isabela-tvitek/projeto-qualidade-php#readme",
+  "devDependencies": {
+    "cypress": "^16.1.0"
+  }
+}
