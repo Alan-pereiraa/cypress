@@ -1,21 +1,22 @@
 import LoginPage from '../pages/LoginPage'
 
 describe('Autenticação', () => {
-    const credentials = [
-        { username: 'standard_user', password: 'secret_sauce', expectedUrl: '/inventory.html' },
-        { username: 'locked_out_user', password: 'secret_sauce' },
-    ]
+    beforeEach(() => {
+        LoginPage.visitar()
+    })
 
     it('Deve autenticar com sucesso', () => {
-        LoginPage.visitar()
-        LoginPage.preencher({ username: credentials[0].username, password: credentials[0].password })
+        cy.fixture('usuarios').then(({ valido }) => {
+            LoginPage.preencher(valido)
+        })
         LoginPage.entrar()
-        cy.url().should('include', credentials[0].expectedUrl)
+        cy.url().should('include', '/inventory.html')
     })
 
     it('Deve falhar na autenticação com usuário incorreto', () => {
-        LoginPage.visitar()
-        LoginPage.preencher(credentials[1])
+        cy.fixture('usuarios').then(({ bloqueado }) => {
+            LoginPage.preencher(bloqueado)
+        })
         LoginPage.entrar()
         LoginPage.erro().should('be.visible')
     })

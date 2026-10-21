@@ -3,13 +3,19 @@ import CheckoutCompletePage from '../pages/CheckoutCompletePage'
 
 describe('Venda', () => {
     beforeEach(() => {
-        cy.login('standard_user', 'secret_sauce')
+        cy.fixture('usuarios').then(({ valido }) => {
+            cy.login(valido.username, valido.password)
+        })
+        cy.fixture('produtos').then(({ mochila }) => {
+            cy.adicionarAoCarrinho(mochila.slug)
+        })
     })
 
     it('Deve realizar uma venda', () => {
-        cy.adicionarAoCarrinho('sauce-labs-backpack')
-        cy.preencherCheckout({ firstName: 'Alan', lastName: 'Pereira', postalCode: '12345-678' })
-        CheckoutOverviewPage.finalizar()
-        CheckoutCompletePage.titulo().should('have.text', 'Thank you for your order!')
+        cy.fixture('checkout').then(({ cliente, sucesso }) => {
+            cy.preencherCheckout(cliente)
+            CheckoutOverviewPage.finalizar()
+            CheckoutCompletePage.titulo().should('have.text', sucesso)
+        })
     })
 })

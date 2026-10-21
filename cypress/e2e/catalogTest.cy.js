@@ -2,7 +2,9 @@ import InventoryPage from '../pages/InventoryPage'
 
 describe('Catálogo de Produtos', () => {
     beforeEach(() => {
-        cy.login('standard_user', 'secret_sauce')
+        cy.fixture('usuarios').then(({ valido }) => {
+            cy.login(valido.username, valido.password)
+        })
     })
 
     it('Deve exibir a lista de produtos', () => {
