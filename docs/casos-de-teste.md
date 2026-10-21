@@ -1,7 +1,7 @@
 # Casos de Teste — Sauce Demo
 
-Sistema sob teste: [https://saucedemo.com](https://saucedemo.com)
-Ferramenta de automação: Cypress
+Sistema sob teste: [https://www.saucedemo.com](https://www.saucedemo.com)
+Ferramenta de automação: Cypress · Massa de dados: `cypress/fixtures/`
 
 ---
 
@@ -37,7 +37,7 @@ Ferramenta de automação: Cypress
 | **Objetivo** | Verificar que o sistema bloqueia o acesso de um usuário inexistente |
 | **Pré-condições** | Usuário na página de login |
 | **Dados de teste** | Usuário: `usuario_invalido` · Senha: `secret_sauce` |
-| **Automação** | `cypress/e2e/authTest.cy.js` — "Deve falhar na autenticação com usuário incorreto" |
+| **Automação** | `cypress/e2e/authTest.cy.js` — "Deve recusar o usuário inexistente" (variação: "Deve recusar o usuário bloqueado", `locked_out_user`) |
 
 **Passos:**
 1. Acessar a página inicial do sistema.
@@ -83,7 +83,7 @@ Ferramenta de automação: Cypress
 | **Objetivo** | Verificar que o usuário consegue adicionar um produto ao carrinho |
 | **Pré-condições** | Usuário autenticado com `standard_user` e carrinho vazio |
 | **Dados de teste** | Produto: `Sauce Labs Backpack` |
-| **Automação** | A implementar em `cypress/e2e/cartTest.cy.js` |
+| **Automação** | `cypress/e2e/cartTest.cy.js` — "Deve adicionar um produto ao carrinho" |
 
 **Passos:**
 1. Realizar login com `standard_user` / `secret_sauce`.
@@ -106,7 +106,7 @@ Ferramenta de automação: Cypress
 | **Objetivo** | Verificar que o usuário consegue concluir uma compra com um produto no carrinho |
 | **Pré-condições** | Usuário autenticado com `standard_user` e com o produto `Sauce Labs Backpack` no carrinho |
 | **Dados de teste** | First Name: `Alan` · Last Name: `Pereira` · Zip/Postal Code: `12345-678` |
-| **Automação** | A implementar em `cypress/e2e/cartTest.cy.js` |
+| **Automação** | `cypress/e2e/SaleTest.cy.js` — "Deve realizar uma venda" |
 
 **Passos:**
 1. Acessar o carrinho e clicar em **Checkout**.
@@ -119,3 +119,91 @@ Ferramenta de automação: Cypress
 - O usuário é redirecionado para `/checkout-complete.html`.
 - É exibida a mensagem *"Thank you for your order!"*.
 - O contador do carrinho deixa de ser exibido.
+
+---
+
+## 6. Caso de teste: Checkout sem o primeiro nome
+
+| Campo | Descrição |
+|---|---|
+| **ID** | CT-06 |
+| **Funcionalidade** | Checkout |
+| **Objetivo** | Verificar que o checkout exige o campo obrigatório **First Name** |
+| **Pré-condições** | Usuário autenticado com `standard_user` e com o produto `Sauce Labs Backpack` no carrinho |
+| **Dados de teste** | Last Name: `Pereira` · Zip/Postal Code: `12345-678` · First Name vazio (`semNome` em `checkout.json`) |
+| **Automação** | `cypress/e2e/SaleTest.cy.js` — "Deve exigir o primeiro nome no checkout" |
+
+**Passos:**
+1. Acessar o carrinho e clicar em **Checkout**.
+2. Preencher apenas **Last Name** e **Zip/Postal Code**.
+3. Clicar em **Continue**.
+
+**Resultado esperado:**
+- É exibida a mensagem *"Error: First Name is required"*.
+- O usuário permanece em `/checkout-step-one.html`.
+
+---
+
+## 7. Caso de teste: Imagem do produto servida por stub
+
+| Campo | Descrição |
+|---|---|
+| **ID** | CT-07 |
+| **Funcionalidade** | Catálogo de produtos (inventário) |
+| **Objetivo** | Verificar que a imagem do produto exibida é a resposta controlada pelo teste (stub com `cy.intercept`) |
+| **Pré-condições** | Cache do navegador desligado; requisição da imagem da mochila interceptada |
+| **Dados de teste** | Imagem `cypress/fixtures/mochila.png` (1×1 px) |
+| **Automação** | `cypress/e2e/catalogStubTest.cy.js` — "Deve exibir a imagem do produto servida pelo stub" |
+
+**Passos:**
+1. Interceptar a imagem `sauce-backpack-*.jpg` e responder com a fixture.
+2. Realizar login com `standard_user` / `secret_sauce`.
+
+**Resultado esperado:**
+- A requisição da imagem é interceptada.
+- A imagem do `Sauce Labs Backpack` tem largura natural de 1 px (a original tem 1200 px).
+
+---
+
+## 8. Caso de teste: Catálogo com falha no carregamento das imagens
+
+| Campo | Descrição |
+|---|---|
+| **ID** | CT-08 |
+| **Funcionalidade** | Catálogo de produtos (inventário) |
+| **Objetivo** | Verificar que o catálogo continua utilizável quando todas as imagens de produto falham (stub de falha) |
+| **Pré-condições** | Cache do navegador desligado; imagens de produto interceptadas com resposta `404` |
+| **Dados de teste** | Usuário `standard_user` · Produto `Sauce Labs Backpack` |
+| **Automação** | `cypress/e2e/catalogStubTest.cy.js` — "Deve manter o catálogo utilizável quando as imagens falham" |
+
+**Passos:**
+1. Interceptar as imagens `*-1200x1500-*.jpg` e responder com `404`.
+2. Realizar login com `standard_user` / `secret_sauce`.
+3. Clicar em **Add to cart** no produto `Sauce Labs Backpack`.
+
+**Resultado esperado:**
+- Todos os produtos exibem nome e preço.
+- A imagem do produto aparece quebrada (carregamento concluído com largura 0).
+- O botão muda para **Remove** e o carrinho exibe o contador `1`.
+
+---
+
+## 9. Caso de teste: Autenticação sem senha (valor-limite)
+
+| Campo | Descrição |
+|---|---|
+| **ID** | CT-09 |
+| **Funcionalidade** | Autenticação |
+| **Objetivo** | Verificar que o sistema exige a senha |
+| **Pré-condições** | Usuário na página de login |
+| **Dados de teste** | Usuário: `standard_user` · Senha vazia (cenário `sem senha` em `usuarios.json`) |
+| **Automação** | `cypress/e2e/authTest.cy.js` — "Deve recusar o usuário sem senha" |
+
+**Passos:**
+1. Acessar a página inicial do sistema.
+2. Preencher apenas o campo **Username** com `standard_user`.
+3. Clicar no botão **Login**.
+
+**Resultado esperado:**
+- O usuário permanece na página de login.
+- É exibida a mensagem de erro: *"Epic sadface: Password is required"*.
