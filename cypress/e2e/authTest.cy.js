@@ -1,4 +1,6 @@
 import LoginPage from '../pages/LoginPage'
+// import (e não cy.fixture) porque o forEach precisa dos dados para gerar os it()
+import usuarios from '../fixtures/usuarios.json'
 
 describe('Autenticação', () => {
     beforeEach(() => {
@@ -6,18 +8,16 @@ describe('Autenticação', () => {
     })
 
     it('Deve autenticar com sucesso', () => {
-        cy.fixture('usuarios').then(({ valido }) => {
-            LoginPage.preencher(valido)
-        })
+        LoginPage.preencher(usuarios.valido)
         LoginPage.entrar()
         cy.url().should('include', '/inventory.html')
     })
 
-    it('Deve falhar na autenticação com usuário incorreto', () => {
-        cy.fixture('usuarios').then(({ bloqueado }) => {
-            LoginPage.preencher(bloqueado)
+    usuarios.invalidos.forEach(({ tipo, credenciais, erro }) => {
+        it(`Deve recusar o usuário ${tipo}`, () => {
+            LoginPage.preencher(credenciais)
+            LoginPage.entrar()
+            LoginPage.erro().should('have.text', erro)
         })
-        LoginPage.entrar()
-        LoginPage.erro().should('be.visible')
     })
 })

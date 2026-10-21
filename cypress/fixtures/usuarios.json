@@ -1,4 +1,20 @@
 {
     "valido": { "username": "standard_user", "password": "secret_sauce" },
-    "bloqueado": { "username": "locked_out_user", "password": "secret_sauce" }
+    "invalidos": [
+        {
+            "tipo": "bloqueado",
+            "credenciais": { "username": "locked_out_user", "password": "secret_sauce" },
+            "erro": "Epic sadface: Sorry, this user has been locked out."
+        },
+        {
+            "tipo": "inexistente",
+            "credenciais": { "username": "usuario_invalido", "password": "secret_sauce" },
+            "erro": "Epic sadface: Username and password do not match any user in this service"
+        },
+        {
+            "tipo": "sem senha",
+            "credenciais": { "username": "standard_user" },
+            "erro": "Epic sadface: Password is required"
+        }
+    ]
 }
