@@ -1,4 +1,5 @@
 import LoginPage from '../pages/LoginPage'
+import InventoryPage from '../pages/InventoryPage'
 
 describe('Carrinho de Compras', () => {
     beforeEach(() => {
@@ -9,7 +10,7 @@ describe('Carrinho de Compras', () => {
     })
 
     it('Deve adicionar um produto ao carrinho', () => {
-        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
-        cy.get('[data-test="shopping-cart-badge"]').should('contain', '1')
+        InventoryPage.adicionar('sauce-labs-backpack')
+        InventoryPage.badge().should('contain', '1')
     })
 })

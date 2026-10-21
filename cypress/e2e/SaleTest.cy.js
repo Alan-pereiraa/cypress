@@ -1,4 +1,5 @@
 import LoginPage from '../pages/LoginPage'
+import InventoryPage from '../pages/InventoryPage'
 
 describe('Venda', () => {
     beforeEach(() => {
@@ -9,8 +10,8 @@ describe('Venda', () => {
     })
 
     it('Deve realizar uma venda', () => {
-        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click()
-        cy.get('[data-test="shopping-cart-link"]').click()
+        InventoryPage.adicionar('sauce-labs-backpack')
+        InventoryPage.abrirCarrinho()
         cy.get('[data-test="checkout"]').click()
         cy.get('[data-test="firstName"]').type('Alan')
         cy.get('[data-test="lastName"]').type('Pereira')

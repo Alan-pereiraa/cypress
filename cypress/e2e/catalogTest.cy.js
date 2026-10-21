@@ -1,4 +1,5 @@
 import LoginPage from '../pages/LoginPage'
+import InventoryPage from '../pages/InventoryPage'
 
 describe('Catálogo de Produtos', () => {
     beforeEach(() => {
@@ -8,6 +9,9 @@ describe('Catálogo de Produtos', () => {
     })
 
     it('Deve exibir a lista de produtos', () => {
-        cy.get('.inventory_item').should('have.length.greaterThan', 0)
+        InventoryPage.itens().should('have.length.greaterThan', 0)
+        InventoryPage.itens().first().within(() => {
+            InventoryPage.nome().should('not.be.empty')
+        })
     })
 })
