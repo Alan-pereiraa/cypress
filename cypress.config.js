@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress';
 
 const cypressConfig = defineConfig({
   e2e: {
-    baseUrl: 'https://saucedemo.com',
+    baseUrl: 'https://www.saucedemo.com',
     supportFile: false,
   },
   video: true
