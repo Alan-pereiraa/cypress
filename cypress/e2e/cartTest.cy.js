@@ -1,9 +1,10 @@
+import LoginPage from '../pages/LoginPage'
+
 describe('Carrinho de Compras', () => {
     beforeEach(() => {
-        cy.visit('/')
-        cy.get('[data-test="username"]').type('standard_user')
-        cy.get('[data-test="password"]').type('secret_sauce')
-        cy.get('[data-test="login-button"]').click()
+        LoginPage.visitar()
+        LoginPage.preencher({ username: 'standard_user', password: 'secret_sauce' })
+        LoginPage.entrar()
         cy.url().should('include', '/inventory.html')
     })
 
