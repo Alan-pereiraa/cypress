@@ -18,6 +18,7 @@ describe('Venda', () => {
             CheckoutOverviewPage.finalizar()
             CheckoutCompletePage.titulo().should('have.text', sucesso)
         })
+        cy.url().should('include', '/checkout-complete.html')
     })
 
     it('Deve exigir o primeiro nome no checkout', () => {
