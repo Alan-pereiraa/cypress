@@ -1,11 +1,8 @@
-import LoginPage from '../pages/LoginPage'
 import InventoryPage from '../pages/InventoryPage'
 
 describe('Catálogo de Produtos', () => {
     beforeEach(() => {
-        LoginPage.visitar()
-        LoginPage.preencher({ username: 'standard_user', password: 'secret_sauce' })
-        LoginPage.entrar()
+        cy.login('standard_user', 'secret_sauce')
     })
 
     it('Deve exibir a lista de produtos', () => {

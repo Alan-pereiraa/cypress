@@ -1,4 +1,3 @@
-import LoginPage from '../pages/LoginPage'
 import InventoryPage from '../pages/InventoryPage'
 import CartPage from '../pages/CartPage'
 import CheckoutInfoPage from '../pages/CheckoutInfoPage'
@@ -7,10 +6,7 @@ import CheckoutCompletePage from '../pages/CheckoutCompletePage'
 
 describe('Venda', () => {
     beforeEach(() => {
-        LoginPage.visitar()
-        LoginPage.preencher({ username: 'standard_user', password: 'secret_sauce' })
-        LoginPage.entrar()
-        cy.url().should('include', '/inventory.html')
+        cy.login('standard_user', 'secret_sauce')
     })
 
     it('Deve realizar uma venda', () => {
