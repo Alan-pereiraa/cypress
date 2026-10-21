@@ -6,7 +6,7 @@ describe('Carrinho de Compras', () => {
     })
 
     it('Deve adicionar um produto ao carrinho', () => {
-        InventoryPage.adicionar('sauce-labs-backpack')
+        cy.adicionarAoCarrinho('sauce-labs-backpack')
         InventoryPage.badge().should('contain', '1')
     })
 })

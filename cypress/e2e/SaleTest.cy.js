@@ -1,6 +1,3 @@
-import InventoryPage from '../pages/InventoryPage'
-import CartPage from '../pages/CartPage'
-import CheckoutInfoPage from '../pages/CheckoutInfoPage'
 import CheckoutOverviewPage from '../pages/CheckoutOverviewPage'
 import CheckoutCompletePage from '../pages/CheckoutCompletePage'
 
@@ -10,11 +7,8 @@ describe('Venda', () => {
     })
 
     it('Deve realizar uma venda', () => {
-        InventoryPage.adicionar('sauce-labs-backpack')
-        InventoryPage.abrirCarrinho()
-        CartPage.checkout()
-        CheckoutInfoPage.preencher({ firstName: 'Alan', lastName: 'Pereira', postalCode: '12345-678' })
-        CheckoutInfoPage.continuar()
+        cy.adicionarAoCarrinho('sauce-labs-backpack')
+        cy.preencherCheckout({ firstName: 'Alan', lastName: 'Pereira', postalCode: '12345-678' })
         CheckoutOverviewPage.finalizar()
         CheckoutCompletePage.titulo().should('have.text', 'Thank you for your order!')
     })
