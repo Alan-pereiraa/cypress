@@ -1,3 +1,4 @@
+import CheckoutInfoPage from '../pages/CheckoutInfoPage'
 import CheckoutOverviewPage from '../pages/CheckoutOverviewPage'
 import CheckoutCompletePage from '../pages/CheckoutCompletePage'
 
@@ -17,5 +18,13 @@ describe('Venda', () => {
             CheckoutOverviewPage.finalizar()
             CheckoutCompletePage.titulo().should('have.text', sucesso)
         })
+    })
+
+    it('Deve exigir o primeiro nome no checkout', () => {
+        cy.fixture('checkout').then(({ semNome, erroSemNome }) => {
+            cy.preencherCheckout(semNome)
+            CheckoutInfoPage.erro().should('have.text', erroSemNome)
+        })
+        cy.url().should('include', '/checkout-step-one.html')
     })
 })
